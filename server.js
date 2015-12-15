@@ -17,12 +17,21 @@ app.get('/', function (req, res) {
 app.get('/todos', function (req, res) {
 	var queryparams=req.query;
 	var filteredTodos=todos;
+	// for "completed" section
 	if(queryparams.hasOwnProperty('completed')&& queryparams.completed==='true'){
 		filteredTodos=_.where(filteredTodos,{completed:true});
 	}else if(queryparams.hasOwnProperty('completed')&& queryparams.completed==='false'){
 		filteredTodos=_.where(filteredTodos,{completed:false});
 
 	} 
+	//FOR "description" section
+	if (queryparams.hasOwnProperty('q')&& queryparams.q.length>0){
+		filteredTodos=_.filter(filteredTodos,function (todo){
+			return todo.description.toLowerCase().indexOf(queryparams.q.toLowerCase())> -1;
+			//toLowerCase is used for for advencd searching like if i type work then it can find the word WORK also
+
+		});
+	}
 	res.json(filteredTodos);
 });
 
