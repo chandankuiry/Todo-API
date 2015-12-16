@@ -33,7 +33,7 @@ sequelize.sync({force: true}).then(function () {
 		
 	}).then(function (){
 		//return Todo.findById(2)   //findById method find the todo if we given the id if not it show else block
-		//another method is findAll() which find todo which as which we given in where clause 
+		//another method is findAll() which find todo which as which we give in where clause 
 		//and for this cause for multiple item found here so we have to set todos inspite of Todo in function parameter
 		return Todo.findAll({
 			where: {
