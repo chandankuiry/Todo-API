@@ -13,7 +13,14 @@ module.exports=function (sequelize, DataTypes) {
 			type: DataTypes.BOOLEAN,
 			allowNull: false,
 			//because completed should not be empty
-			defaultValue: false
+			defaultValue: false,
+			validate: {
+				isBoolean: function (value) {
+					if (typeof value !== 'boolean') {
+						throw new Error('Completed must be boolean');
+					}
+				}
+			}
 		}
 	});
 };
