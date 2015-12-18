@@ -34,7 +34,7 @@ app.get('/todos', function(req, res) {
 	}, function (e) {
 		res.status(500).send();	
 	});
-
+});
 
 	/*var filteredTodos = todos;
 	// for "completed" section
@@ -57,7 +57,7 @@ app.get('/todos', function(req, res) {
 		});
 	}
 	res.json(filteredTodos);*/
-});
+//});
 
 // GET /todos/:id
 app.get('/todos/:id', function(req, res) {
@@ -72,6 +72,7 @@ app.get('/todos/:id', function(req, res) {
 	}, function (e) {
 		res.status(500).send();
 	});
+});	
 	/*var matchedTodo = _.findWhere(todos, {
 		id: todoId
 	});
@@ -81,7 +82,7 @@ app.get('/todos/:id', function(req, res) {
 	} else {
 		res.status(404).send();
 	}*/
-});
+//});
 
 // POST /todos
 app.post('/todos', function(req, res) {
@@ -93,6 +94,8 @@ app.post('/todos', function(req, res) {
 		res.status(400).json(e);
 		
 	});
+});	
+
 		/*//isBoolean,isString is builtin function of underscore library .trim() is used for avoid space
 	if (!_.isBoolean(body.completed) || !_.isString(body.description) || body.description.trim().length === 0) {
 		return res.status(400).send();
@@ -104,8 +107,8 @@ app.post('/todos', function(req, res) {
 	// push body into array
 	todos.push(body);
 	res.json(body);*/
-	
-});
+//});	
+
 //DELETE /todos/:id
 app.delete('/todos/:id', function(req, res) {
 	var todoId = parseInt(req.params.id, 10);
@@ -125,6 +128,7 @@ app.delete('/todos/:id', function(req, res) {
 
 		res.status(500).send();
 	});
+});	
 	/*var matchedTodo = _.findWhere(todos, {
 		id: todoId
 	});
@@ -137,7 +141,7 @@ app.delete('/todos/:id', function(req, res) {
 		res.json(matchedTodo);
 	}*/
 
-});
+//});
 //PUT and UPDATE
 app.put('/todos/:id', function(req, res) {
 	var todoId = parseInt(req.params.id, 10);
@@ -188,6 +192,21 @@ app.put('/todos/:id', function(req, res) {
 	res.json(matchedTodo);
 */
 //});
+app.post('/users',function (req,res) {
+	var body = _.pick(req.body, 'email', 'password');
+
+	db.user.create(body).then(function (user) {
+		res.json(user.toJSON());
+	}, function(e) {
+		res.status(400).json(e);
+		
+	});
+
+});
+
+
+
+
 db.sequelize.sync().then(function (){
 	app.listen(PORT, function() {
 		console.log('Express listening on port ' + PORT + '!');
