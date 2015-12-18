@@ -15,8 +15,17 @@ module.exports=function (sequelize, DataTypes) {
 			validate: {
 				len:[7, 100]//password should be 7-100 letter
 			}
-		}		
+		}
+	}, {
+		hooks: {
+			beforeValidate: function (user, options){
+				if (typeof user.email === 'string') {
+					user.email=user.email.toLowerCase();
+				}
+			}
+		}
+				
 
 	});	
 
-}		
+};		
