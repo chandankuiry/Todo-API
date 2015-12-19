@@ -208,9 +208,17 @@ app.post('/users',function (req,res) {
 //POST/users/login
 app.post('/users/login', function (req,res) {
 	var body =_.pick(req.body,'email','password');
+
 	db.user.authenticate(body).then(function (user) {
-		res.json(user.toPublicJSON());
-	}, function (e) {
+		var token=user.generateToken('authentication');
+		if (token){
+			res.header('Auth',token).json(user.toPublicJSON());
+		} else{
+			res.status(401).send();
+
+		}
+		
+	}, function () {
 		res.status(401).send();
 	});
 
@@ -219,7 +227,7 @@ app.post('/users/login', function (req,res) {
 
 
 
-db.sequelize.sync().then(function (){
+db.sequelize.sync({force:true}).then(function (){
 	app.listen(PORT, function() {
 		console.log('Express listening on port ' + PORT + '!');
 	});
