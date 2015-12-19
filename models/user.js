@@ -69,6 +69,34 @@ module.exports=function (sequelize, DataTypes) {
 					});
 
 				});
+			},
+			findByToken: function(token) {
+				return new Promise(function (resolve,reject){
+					try {
+						var decodedJWT=jwt.verify(token ,'qwerty098');
+						var bytes =cryptojs.AES.decrypt(decodedJWT.token,'abc123!@#!');
+						//to convert it to actual jsonstring what we want 
+						var tokenData=JSON.parse(bytes.toString(cryptojs.enc.Utf8));
+
+						//to find the id  because in previous code we simply get mixed of id&type
+						user.findById(tokenData.id).then(function (user){
+							//to check user exist or not
+							if(user) {
+								resolve(user);
+							} else {
+								reject(); // if use account not exist
+
+							}
+							// if findById fail
+						}, function(e) {
+							reject();
+							
+						});
+					} catch(e) {
+						reject();
+					}
+
+				});
 			}
 
 		},

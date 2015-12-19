@@ -3,7 +3,8 @@ var bodyParser = require('body-parser');
 var _ = require('underscore');
 var db=require('./db.js');
 var bcrypt=require('bcrypt');
-
+var middleware=require('./middleware.js')(db); //we create module.export to pass into database so i use (db)
+//to access the middleware we passed this under every app.get('url',middleware.requireAuthentication,function()) like this
 var app = express();
 var PORT = process.env.PORT || 3000;
 var todos = [];
@@ -16,7 +17,7 @@ app.get('/', function(req, res) {
 });
 
 // GET /todos?completed=true(qyery parameter)
-app.get('/todos', function(req, res) {
+app.get('/todos',middleware.requireAuthentication ,function(req, res) {
 	var query = req.query;
 	var where={};
 	if (query.hasOwnProperty('completed') && query.completed === 'true'){
@@ -61,7 +62,7 @@ app.get('/todos', function(req, res) {
 //});
 
 // GET /todos/:id
-app.get('/todos/:id', function(req, res) {
+app.get('/todos/:id',middleware.requireAuthentication , function(req, res) {
 	var todoId = parseInt(req.params.id, 10);
 	db.todo.findById(todoId).then(function (todo) {
 		if (!!todo){
@@ -86,7 +87,7 @@ app.get('/todos/:id', function(req, res) {
 //});
 
 // POST /todos
-app.post('/todos', function(req, res) {
+app.post('/todos',middleware.requireAuthentication,function(req, res) {
 	var body = _.pick(req.body, 'description', 'completed');
 
 	db.todo.create(body).then(function (todo) {
@@ -111,7 +112,7 @@ app.post('/todos', function(req, res) {
 //});	
 
 //DELETE /todos/:id
-app.delete('/todos/:id', function(req, res) {
+app.delete('/todos/:id',middleware.requireAuthentication  ,function(req, res) {
 	var todoId = parseInt(req.params.id, 10);
 	db.todo.destroy({
 		where:{
@@ -144,7 +145,7 @@ app.delete('/todos/:id', function(req, res) {
 
 //});
 //PUT and UPDATE
-app.put('/todos/:id', function(req, res) {
+app.put('/todos/:id',middleware.requireAuthentication  ,function(req, res) {
 	var todoId = parseInt(req.params.id, 10);
 	var body=_.pick(req.body, 'description','completed');
 	var attributes ={};
