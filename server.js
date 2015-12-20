@@ -19,7 +19,9 @@ app.get('/', function(req, res) {
 // GET /todos?completed=true(qyery parameter)
 app.get('/todos',middleware.requireAuthentication ,function(req, res) {
 	var query = req.query;
-	var where={};
+	var where={
+		userId:req.user.get('id')// here always return the todos of individual user loginid
+	};
 	if (query.hasOwnProperty('completed') && query.completed === 'true'){
 		where.completed =true;
 	} else if (query.hasOwnProperty('completed') && query.completed === 'false'){
@@ -64,7 +66,12 @@ app.get('/todos',middleware.requireAuthentication ,function(req, res) {
 // GET /todos/:id
 app.get('/todos/:id',middleware.requireAuthentication , function(req, res) {
 	var todoId = parseInt(req.params.id, 10);
-	db.todo.findById(todoId).then(function (todo) {
+	db.todo.findOne({
+		where: {
+			id:todoId,
+			userId:req.user.get('id')//here find id according to individual user login
+		}
+	}).then(function (todo) {
 		if (!!todo){
 			res.json(todo.toJSON());
 
@@ -91,7 +98,7 @@ app.post('/todos',middleware.requireAuthentication,function(req, res) {
 	var body = _.pick(req.body, 'description', 'completed');
 
 	db.todo.create(body).then(function (todo) {
-		req.user.addTodo(todo).then(function () {
+		req.user.addTodo(todo).then(function () {//we can access addTodo because we set association in db.js
 			//if something upadte then reload the user todo
 			return todo.reload();
 		}).then(function (){
@@ -123,7 +130,8 @@ app.delete('/todos/:id',middleware.requireAuthentication  ,function(req, res) {
 	var todoId = parseInt(req.params.id, 10);
 	db.todo.destroy({
 		where:{
-			id:todoId
+			id:todoId,
+			userId:req.user.get('id')//here we can delete todos according to individual user login
 		}
 	}).then(function (rowsDeleted) {
 		if(rowsDeleted === 0){
@@ -164,7 +172,12 @@ app.put('/todos/:id',middleware.requireAuthentication  ,function(req, res) {
 	if (body.hasOwnProperty('description')) {
 		attributes.description = body.description;
 	}
-	db.todo.findById(todoId).then(function(todo) {
+	db.todo.findOne({
+		where:{
+			id:todoId,
+			userId:req.user.get('id')//we can update todos according to individual login
+		}
+	}).then(function(todo) {
 		if (todo) {
 			todo.update(attributes).then(function(todo) {
 				res.json(todo.toJSON());

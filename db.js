@@ -17,7 +17,7 @@ db.todo=sequelize.import(__dirname +'/models/todo.js');
 db.user=sequelize.import(__dirname +'/models/user.js');
 db.sequelize=sequelize;
 db.Sequelize=Sequelize;
-
+//association oneto many
 db.todo.belongsTo(db.user);//todo belongs to user which is db.user
 db.user.hasMany(db.todo);//user has many todos and todos model is db.todo
 
