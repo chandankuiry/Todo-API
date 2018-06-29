@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "author": "",
   "license": "ISC",
@@ -17,7 +19,9 @@
     "pg": "^4.4.1",
     "pg-hstore": "^2.3.2",
     "sequelize": "^3.5.1",
-    "sqlite3": "^3.1.0",
-    "underscore": "^1.8.3"
-  }
+    "sqlite3": "^4.0.0",
+    "underscore": "^1.8.3",
+    "snyk": "^1.87.0"
+  },
+  "snyk": true
 }
